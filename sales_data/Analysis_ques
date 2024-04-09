@@ -1,0 +1,20 @@
+-- 1. which city has most number of the cash payment
+-- 2. fetch the data top 1 unit_price based on the product_type
+-- 3. fetch sports and travel's unit price
+-- 4. top 10 most tax product type
+-- 5. which product type female loves most
+-- 6. count the number of product in each product_type( will be find using unit_price) 
+-- 7. differenciate the tax by the customer_type
+-- 8. which gender use cash most
+-- 9. total the whole tax for each product_type
+-- 10. fetch the data that count payment for each branch
+-- 11. which gender bought Home and lifestyle most
+-- 12. analyse the product_type sales for each branch
+-- 13. differenciate the use of ewallet by the gender
+-- 14. differenciate each product buyer by the gender
+-- 15. which brach has most number of food and beverages buyer
+-- 16. fetch total data which has maximum amount pay by the each payment method
+-- 17. fetch data of product type which has most number of selling in each branch
+-- 18. which brance has most number of member in customer type
+-- 19. what is the count of buyer in fashion accessories
+-- 20. return data that which gender bought most in each product_type 
