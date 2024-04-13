@@ -1,0 +1,125 @@
+select * from supermarket_sales;
+-- 1. which city has most number of the cash payment
+select city,count(payment) as no_of_cash_payment from supermarket_sales
+where payment='cash'
+group by city
+order by no_of_cash_payment desc limit 1;
+------------------------------------------------------------------------------------------------------------------------------------------
+-- 2. fetch the data top 1 unit_price based on the product_type
+select product_type,max(unit_price) as top_1
+from supermarket_sales
+group by product_type
+order by top_1 desc;
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 3. fetch sports and travel's unit price
+select product_type,unit_price
+from supermarket_sales
+where product_type='sports and travel' ;
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 4. top 10 most tax product type
+with tab as (
+select product_type,tax as top_10,
+dense_rank() over(order by tax desc) as rk from supermarket_sales)
+select product_type,top_10 from tab
+where rk<=10;
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 5. which product type female loves most/female involvement----vs
+with tab as (
+select product_type,count(gender) as gen_count  
+from supermarket_sales
+where gender='female'
+group by product_type
+order by gen_count desc limit 1)
+select product_type from tab;
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 6. count the number of product in each product_type( will be find using unit_price) 
+select product_type,count(unit_price) as no_of_unit
+from supermarket_sales
+group by product_type;
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 7. differenciate the tax by the customer_type
+select
+round(sum(case when customer_type='member' then tax end ),2) as member_tax,
+round(sum(case when customer_type='normal' then tax end),2) as normal_tax
+from supermarket_sales;
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 8. which gender use cash most
+select gender,count(payment) as no_cash
+from supermarket_sales
+where payment='cash'
+group by gender;
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 9. total the whole tax for each product_type
+select product_type,round(sum(tax),2) as tot_tax
+from supermarket_sales
+group by product_type;
+-- 10. fetch the data that total revenue for each branch
+select branch,round(sum(total),2) from supermarket_sales
+group by branch;
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 11. which gender bought Home and lifestyle most
+select gender,count(product_type) as no_buyer from supermarket_sales
+where product_type='Home and lifestyle'
+group by gender;
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 12. analyse the product_type sales for each branch
+select branch,product_type,count(Invoice_IDBranch) as no_of_sales
+from supermarket_sales
+group by branch,product_type
+order by branch;
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 13. differenciate the use of ewallet by the gender
+select
+count(case when gender='male'and payment='ewallet' then payment end ) as male_user,
+count(case when gender='female' and payment='ewallet' then payment end) as female_user
+from supermarket_sales;
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 14. differenciate each product buyer by the gender
+select product_type,gender,count(Invoice_IDBranch) as no_of_buyers
+from supermarket_sales
+group by product_type,gender
+order by product_type;
+------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 15. which brach has most number of food and beverages buyer
+select branch,count(product_type) as user_count from supermarket_sales
+where product_type='food and beverages'
+group by branch
+order by user_count desc;
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+-- 16. fetch total data which has maximum amount pay by the each payment method
+with tab as(
+select payment,total,
+row_number() over(partition by payment order by total desc) as rk 
+from supermarket_sales)
+select * from tab
+where rk=1;
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 17. fetch data of product type which has most number of selling in each branch
+select branch,product_type,
+count(product_type) as no_of_selling from supermarket_sales
+group by branch,product_type
+order by branch;
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 18. which brance has most number of member in customer type
+select branch,count(customer_type) as no_of_membership
+from supermarket_sales
+where customer_type="member"
+group by branch;
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 19. what is the count of buyer in fashion accessories
+select product_type,count(invoice_idbranch) as no_of_buyer 
+from supermarket_sales
+where product_type='fashion accessories';
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+-- 20. return data that which gender bought most in each product_type 
+with tab as(
+select product_type,gender,
+count(Invoice_IDBranch) as no_of_buyer from supermarket_sales
+group by product_type,gender
+order by product_type),
+main_tab as(
+select * ,
+row_number() over(partition by product_type order by no_of_buyer desc) as rk from tab)
+select product_type, gender, no_of_buyer from main_tab
+where rk=1;
+-----------------------------------------------------------------------------------------------------------------------------------------------
